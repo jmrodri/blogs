@@ -60,7 +60,7 @@ VARS="-p BROKER_CA_CERT=$(oc get secret -n kube-service-catalog -o go-template='
 Now let's download the template, process the variables, and create the project.
 
 ```bash
-curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/master/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
+curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
 ```
 
 A succesful deployment will look like the following.
