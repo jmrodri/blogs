@@ -1,24 +1,6 @@
 Up and running with the Ansible Service Broker
 ------------------------------------------------
 
-https://docs.openshift.org/latest/architecture/service_catalog/ansible_service_broker.html
-
-
-audience: casual user (or apb author)
-
-goals:
- * how to get the broker up and running
- * assume 3.7 cluster up already (oc cluster up --service-catalog)
-   (non-production)
-   mention there is a requirement to have the 3.7 cluster, they can use any of
-   the supported mechanisms: openshift-ansible, minishift, etc. Then for the
-   purposes of this blog we will use oc cluster up --service-catalog
-
-* what is an APB and how to use it (dylan will cover how to create one)
-
-* introduction on what ansible service broker is
-* variety of ways of setting up the broker
-
 In this blog we will discuss how to get up and running with the OpenShift
 Ansible broker. What is the Ansible broker you ask?
 
