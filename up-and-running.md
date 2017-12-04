@@ -19,8 +19,8 @@ You will need an OpenShift 3.7 cluster running with the service catalog enabled.
 [INSERT LINK TO HOW TO DO THAT].  I typically just start a cluster with the
 following command:
 
-```
-CMD oc cluster up --service-catalog=true
+```bash
+oc cluster up --service-catalog=true
 ```
 
 NOTE: if you are using Fedora 26 ensure you are using docker-1.13.1-44 or newer:
@@ -32,14 +32,14 @@ cluster and register it with the service catalog.
 First, we will need a new project to run the broker in. Using the CLI let's
 create the `ansible-service-broker` project.
 
-```
-CMD oc login -u system:admin
-CMD oc new-project ansible-service-broker
+```bash
+oc login -u system:admin
+oc new-project ansible-service-broker
 ```
 
 After a succesful run, you'll see something like this:
 
-```
+```bash
 Now using project "ansible-service-broker" on server "https://127.0.0.1:8443".
 
 You can add applications to this project with the 'new-app' command. For example, try:
@@ -53,19 +53,19 @@ With the project now created, we can deploy the broker. We've assembled an
 OpenShift template [INSERT LINK TO TEMPLATES] that can be used. In order to use
 this template we need to get the CA certificate to use for the broker.
 
-```
-CMD VARS="-p BROKER_CA_CERT=$(oc get secret -n kube-service-catalog -o go-template='{{ range .items }}{{ if eq .type "kubernetes.io/service-account-token" }}{{ index .data "service-ca.crt" }}{{end}}{{"\n"}}{{end}}' | tail -n 1)"
+```bash
+VARS="-p BROKER_CA_CERT=$(oc get secret -n kube-service-catalog -o go-template='{{ range .items }}{{ if eq .type "kubernetes.io/service-account-token" }}{{ index .data "service-ca.crt" }}{{end}}{{"\n"}}{{end}}' | tail -n 1)"
 ```
 
 Now let's download the template, process the variables, and create the project.
 
-```
-CMD curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/master/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
+```bash
+curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/master/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
 ```
 
 A succesful deployment will look like the following.
 
-```
+```bash
 service "asb" created
 service "asb-etcd" created
 serviceaccount "asb" created
@@ -98,8 +98,8 @@ Okay, we have an OpenShift cluster with a Service Catalog and Ansible broker
 running.  You can communicate with the broker through the service catalog
 using the oc command line. Here is an example of listing out the available APB service classes:
 
-```
-CMD oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.name,DISPLAYNAME:spec.externalMetadata.displayName | grep APB
+```bash
+oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.name,DISPLAYNAME:spec.externalMetadata.displayName | grep APB
 ```
 
 It may take some time for the broker to sync the APBs into the catalog.
