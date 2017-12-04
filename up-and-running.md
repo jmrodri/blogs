@@ -107,11 +107,11 @@ It may take some time for the broker to sync the APBs into the catalog.
 Visit the console UI at https://127.0.0.1:8443, after accepting the
 certificate, you should see the login screen:
 
-[screenshot of login screen]
+![screenshot of login screen](up-and-running-login-screen.png)
 
 Login with admin:admin. You should see a list of APB services:
 
-[screenshot of apbs]
+![screenshot of apbs](up-and-running-apb-list-ui.png)
 
 <!--
 NOT SURE IF I WANT TO KEEP THIS BLURB
