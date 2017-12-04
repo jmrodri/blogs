@@ -142,6 +142,13 @@ piped to `oc create` which will create the services, secrets, and routes.
 <!--
 -->
 
+Let's summarize, we brought up a 3.7 cluster, deployed the Ansible broker,
+listed and provisioned an APB.
+
+-------------------------------
+
+# Trying to see how to fit this into the post
+
 By default the broker sources its APBs from the ansibleplaybookbundle organization in dockerhub.
 This can be configured by changing the org of the registry config entry in the
 template:
