@@ -37,7 +37,7 @@ oc login -u system:admin
 oc new-project ansible-service-broker
 ```
 
-After a succesful run, you'll see something like this:
+After a successful run, you'll see something like this:
 
 ```bash
 Now using project "ansible-service-broker" on server "https://127.0.0.1:8443".
@@ -64,7 +64,7 @@ The certificate parameter is now stored. Now let's download the template, proces
 curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
 ```
 
-A succesful deployment will look like the following.
+A successful deployment will look like the following.
 
 ```bash
 service "asb" created
@@ -97,7 +97,7 @@ oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.n
 ```
 
 It may take some time for the broker to sync the APBs into the catalog. If you
-get no APBs at first, run it again in a few seconds. Once they are availble we
+get no APBs at first, run it again in a few seconds. Once they are available we
 can provision one.
 
 ## Provision an APB
