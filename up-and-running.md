@@ -1,16 +1,17 @@
 # DRAFT
-# Up and running with the Ansible Service Broker
+# Up and running with the Ansible Broker
 
 ## Setup
 In this blog we will discuss how to get up and running with the OpenShift
 Ansible broker. What is the Ansible broker you ask?
 
-> The OpenShift Ansible broker (OAB) is an implementation of the Open Service
-> Broker (OSB) API that manages applications defined by Ansible playbook bundles
+> The OpenShift Ansible Broker (OAB) is an implementation of the Open Service
+> Broker (OSB) API that manages applications defined by Ansible Playbook Bundles
 > (APBs). APBs provide a new method for defining and distributing container
 > applications in OpenShift Origin, consisting of a bundle of Ansible playbooks
 > built into a container image with an Ansible runtime. APBs leverage Ansible to
 > create a standard mechanism for automating complex deployments.
+[Source](#)
 
 There are a variety of ways of setting up the broker from templates to Makefile
 targets to the OpenShift installer. For the purpose of this blog post we will
@@ -24,10 +25,10 @@ following command:
 oc cluster up --service-catalog=true
 ```
 
-NOTE: if you are using Fedora 26 ensure you are using docker-1.13.1-44 or newer:
+**NOTE:** if you are using Fedora 26 ensure you are using docker-1.13.1-44 or newer:
 https://bugzilla.redhat.com/show_bug.cgi?id=1504709
 
-Once the cluster is running, we can install the OpenShift Ansible broker into the
+Once the cluster is running, we can install the OpenShift Ansible Broker into the
 cluster and register it with the service catalog. First, we will need a new
 project to run the broker in. Using the CLI let's create the
 `ansible-service-broker` project.
@@ -87,7 +88,7 @@ route "asb-1338" created
 clusterservicebroker "ansible-service-broker" created
 ```
 
-Okay, we have an OpenShift cluster with a Service Catalog and Ansible broker
+We now have an OpenShift cluster with a Service Catalog and Ansible Broker
 running.  You can communicate with the broker through the service catalog
 using the oc command line. Here is an example of listing out the available
 APB service classes:
