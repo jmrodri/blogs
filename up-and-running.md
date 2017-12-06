@@ -126,6 +126,12 @@ into a secret that can be shared with other applications.
 
 ![screenshot of results selection](up-and-running-psql-5-results.png)
 
+Next, let's provision the MediaWiki application.
+
+![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
+![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
+![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
+![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
 
 We can list the provisioned services.
 
