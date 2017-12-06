@@ -167,6 +167,10 @@ dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                              
 So what have we done? We brought up a 3.7 cluster, deployed the Ansible broker,
 listed and provisioned an APBs.
 
+# INCLUDE A BETTER ENDING
+
+# INCLUDE A BETTER TRANSITION HERE
+
 ### APB authors
 If you are an APB developer, you will likely want to have access to the
 OpenShift local registry. You can enable the internal registry to allow
