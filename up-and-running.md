@@ -112,16 +112,20 @@ Login with admin:admin. You should see a list of APB services:
 
 Select the PostgreSQL APB, follow the prompts. Create a new project called
 blog-project, Blog Project.
+
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
 Select the Development plan.
+
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
 Enter in a password, keep the other values as defaults is fine.
+
 ![screenshot of config selection](up-and-running-psql-3-config.png)
 
 Let's create a binding. This will save the credentials for the PostgreSQL DB
 into a secret that can be shared with other applications.
+
 ![screenshot of create binding selection](up-and-running-psql-4-binding.png)
 
 ![screenshot of results selection](up-and-running-psql-5-results.png)
@@ -129,11 +133,19 @@ into a secret that can be shared with other applications.
 Next, let's provision the MediaWiki application.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
+
+Configure MediaWiki
+
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
+
+We can see it deploying, and that PostgreSQL has already been deployed.
+
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
 
-We can list the provisioned services.
+### List the services from the CLI
+The UI isn't the only way to interact with the broker. We can list the
+provisioned services using the CLI..
 
 ```bash
 $ oc get serviceinstances --all-namespaces
@@ -142,7 +154,7 @@ blog-project   dh-mediawiki-apb-rhzcs    1m
 blog-project   dh-postgresql-apb-t84wc   7m
 ```
 
-List out the secrets in the blog-project
+Let's checkout the secrets in the blog-project
 ```bash
 $ oc get secrets -n blog-project | awk -F, 'BEGIN{IGNORECASE=1}; NR==1 {print $1}; /^dh/ {print $1}'
 NAME                                        TYPE                                  DATA      AGE
@@ -151,28 +163,10 @@ dh-postgresql-apb-parameters43rfr           Opaque                              
 dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                                6         27m
 ```
 
-Let's summarize, we brought up a 3.7 cluster, deployed the Ansible broker,
-listed and provisioned an APB.
+So what have we done? We brought up a 3.7 cluster, deployed the Ansible broker,
+listed and provisioned an APBs.
 
--------------------------------
-
-# Trying to see how to fit this into the post
-
-By default the broker sources its APBs from the ansibleplaybookbundle organization in dockerhub.
-This can be configured by changing the org of the registry config entry in the
-template:
-
-```yaml
-      registry:
-        - type: "dockerhub"
-          name: "dh"
-          url: "https://registry.hub.docker.com"
-          org: "ansibleplaybookbundle"
-          tag: "${TAG}"
-          white_list:
-            - ".*-apb$"
-```
-
+### APB authors
 If you are an APB developer, you will likely want to have access to the
 OpenShift local registry. You can enable the internal registry to allow
 your APBs be pushed to the internal registry for faster development.
@@ -189,6 +183,7 @@ registry:
       - ".*-apb$"
 ```
 
+### Deployment Template
 Below you will find the template used to deploy the broker.
 
 ```yaml
