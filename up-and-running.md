@@ -1,6 +1,6 @@
-Up and running with the Ansible Service Broker
-------------------------------------------------
+# Up and running with the Ansible Service Broker
 
+## Setup
 In this blog we will discuss how to get up and running with the OpenShift
 Ansible broker. What is the Ansible broker you ask?
 
@@ -27,10 +27,9 @@ NOTE: if you are using Fedora 26 ensure you are using docker-1.13.1-44 or newer:
 https://bugzilla.redhat.com/show_bug.cgi?id=1504709
 
 Once the cluster is running, we can install the OpenShift Ansible broker into the
-cluster and register it with the service catalog.
-
-First, we will need a new project to run the broker in. Using the CLI let's
-create the `ansible-service-broker` project.
+cluster and register it with the service catalog. First, we will need a new
+project to run the broker in. Using the CLI let's create the
+`ansible-service-broker` project.
 
 ```bash
 oc login -u system:admin
@@ -50,14 +49,15 @@ to build a new example application in Ruby.
 ```
 
 With the project now created, we can deploy the broker. We've assembled an
-OpenShift template [INSERT LINK TO TEMPLATES] that can be used. In order to use
-this template we need to get the CA certificate to use for the broker.
+OpenShift [template](https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml)
+that can be used. In order to use this template we need to get the CA certificate
+to use for the broker.
 
 ```bash
 VARS="-p BROKER_CA_CERT=$(oc get secret -n kube-service-catalog -o go-template='{{ range .items }}{{ if eq .type "kubernetes.io/service-account-token" }}{{ index .data "service-ca.crt" }}{{end}}{{"\n"}}{{end}}' | tail -n 1)"
 ```
 
-Now let's download the template, process the variables, and create the project.
+The certificate parameter is now stored. Now let's download the template, process the variables, and create the broker.
 
 ```bash
 curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
@@ -86,25 +86,22 @@ route "asb-1338" created
 clusterservicebroker "ansible-service-broker" created
 ```
 
-
-
-* once setup now what can we do with it?
-  * list apbs
-  * provision apb from the cli
-  * show ui for provisioning an apps
-  * show performing a bind
-
 Okay, we have an OpenShift cluster with a Service Catalog and Ansible broker
 running.  You can communicate with the broker through the service catalog
-using the oc command line. Here is an example of listing out the available APB service classes:
+using the oc command line. Here is an example of listing out the available
+APB service classes:
 
 ```bash
 oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.name,DISPLAYNAME:spec.externalMetadata.displayName | grep APB
 ```
 
-It may take some time for the broker to sync the APBs into the catalog.
+It may take some time for the broker to sync the APBs into the catalog. If you
+get no APBs at first, run it again in a few seconds. Once they are availble we
+can provision one.
 
-Visit the console UI at https://127.0.0.1:8443, after accepting the
+## Provision an APB
+We will now provision a PostgreSQL APB, create a binding, and provision a
+MediaWiki APB. Visit the console UI at https://127.0.0.1:8443, after accepting the
 certificate, you should see the login screen:
 
 ![screenshot of login screen](up-and-running-login-screen.png)
@@ -113,16 +110,40 @@ Login with admin:admin. You should see a list of APB services:
 
 ![screenshot of apbs](up-and-running-apb-list-ui.png)
 
-<!--
-NOT SURE IF I WANT TO KEEP THIS BLURB
+Select the PostgreSQL APB, follow the prompts. Create a new project called
+blog-project, Blog Project.
+![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
-Let's break down the command used to launch. The template is piped to the `oc
-process` command so that the variables can be substituted. The output is then
-piped to `oc create` which will create the services, secrets, and routes.
--->
+Select the Development plan.
+![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
-<!--
--->
+Enter in a password, keep the other values as defaults is fine.
+![screenshot of config selection](up-and-running-psql-3-config.png)
+
+Let's create a binding. This will save the credentials for the PostgreSQL DB
+into a secret that can be shared with other applications.
+![screenshot of create binding selection](up-and-running-psql-4-binding.png)
+
+![screenshot of results selection](up-and-running-psql-5-results.png)
+
+
+We can list the provisioned services.
+
+```bash
+$ oc get serviceinstances --all-namespaces
+NAMESPACE      NAME                      AGE
+blog-project   dh-mediawiki-apb-rhzcs    1m
+blog-project   dh-postgresql-apb-t84wc   7m
+```
+
+List out the secrets in the blog-project
+```bash
+$ oc get secrets -n blog-project | awk -F, 'BEGIN{IGNORECASE=1}; NR==1 {print $1}; /^dh/ {print $1}'
+NAME                                        TYPE                                  DATA      AGE
+dh-mediawiki-apb-parametersch7a5            Opaque                                1         22m
+dh-postgresql-apb-parameters43rfr           Opaque                                1         28m
+dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                                6         27m
+```
 
 Let's summarize, we brought up a 3.7 cluster, deployed the Ansible broker,
 listed and provisioned an APB.
