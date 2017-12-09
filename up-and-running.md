@@ -125,16 +125,26 @@ get no APBs at first, run it again in a few seconds. Once they are available we
 can provision one.
 
 ## Provision an APB
-We will now provision a PostgreSQL APB, create a binding, and provision a
-MediaWiki APB. Visit the console UI at https://127.0.0.1:8443, after accepting the
-certificate, you should see the login screen:
 
-# ADD MORE CONTEXT
+As we mentioned above, the Broker implements the OSB API. This API contains some
+key verbs: provision, bind, and others. Provision will typically deploy a
+service in your cluster. In the case of the Ansible Broker, it will provision
+your service using the Ansible Playbook Bundle meta-container invoking the
+provision playbook. We will provision a PostgreSQL APB and a MediaWiki APB.
 
-## Provision MediaWiki APB
+Once the two APBs have been provisioned, we will create a binding. Bind is
+another one of the OSB API verbs used to provide credentials / coordinates for
+specific services. We will create a binding for the PostgreSQL service. Like the
+provision, the Broker will use the PostgreSQL APB meta-container to create the bind
+by invoking the bind playbook.
+
+Let's recap, first we will provision two APBs: PostgreSQL and MediaWiki. Then
+create and consume the binding to the PostgreSQL database. Finally we will
+verify the MediaWiki service is up and running.
+
 ## Provision PostgreSQL APB
-## Create and Consume Binding
-## Verify MediaWiki
+We need to visit the console UI at https://127.0.0.1:8443, after accepting the
+certificate, you should see the login screen:
 ![screenshot of login screen](up-and-running-login-screen.png)
 
 Login with admin:admin. You should see a list of APB services:
@@ -154,14 +164,23 @@ Enter in a password, keep the other values as defaults is fine.
 
 ![screenshot of config selection](up-and-running-psql-3-config.png)
 
-Let's create a binding. This will save the credentials for the PostgreSQL DB
-into a secret that can be shared with other applications.
+Above we selected an APB to provision. We created a project to put the service
+in to. We supplied some configuration parameters to the service. The parameters
+are actually supplied by the APB. That is part of the services metadata which is
+exposed to OpenShift. This allows the UI to be catered to the particular
+service. We will see a different set of parameters when we provision the
+MediaWiki APB later.
 
-![screenshot of create binding selection](up-and-running-psql-4-binding.png)
+Once concept you have have noticed was that of plans.  Plans are another OSB
+API concept that are akin to tiers or pricing plans. For
+example, you could have a development plan that has minimal resources,lower
+cost and little to no persistence storage. This would let users use a service
+for development purposes. Or you could have for example, a production plan, that
+has high-availability, a good bit of persistence storage, and more resources.
+The PostgreSQL APB exposes two plans: development and production.
 
-![screenshot of results selection](up-and-running-psql-5-results.png)
-
-Next, let's provision the MediaWiki application.
+## Provision MediaWiki APB
+Next, let's provision the MediaWiki APB.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
@@ -173,6 +192,16 @@ We can see it deploying, and that PostgreSQL has already been deployed.
 
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
+
+## Create and Consume Binding
+Let's create a binding. This will save the credentials for the PostgreSQL DB
+into a secret that can be shared with other applications.
+
+![screenshot of create binding selection](up-and-running-psql-4-binding.png)
+
+![screenshot of results selection](up-and-running-psql-5-results.png)
+
+## Verify MediaWiki
 
 ### List the services from the CLI
 The UI isn't the only way to interact with the broker. We can list the
@@ -195,538 +224,15 @@ dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                              
 ```
 
 So what have we done? We brought up a 3.7 cluster, deployed the Ansible broker,
-listed and provisioned an APBs.
+listed and provisioned a couple of APBs.
 
-# INCLUDE A BETTER ENDING
-<!--
-* actively developed project
-* encourage folks to subscribe to our mailing list
-* encourse folks to subscribe to our youtube channel
-* share project resources
-    * IRC channel
-    * github repo link
-    * youtube channel, etc
--->
+## Come check out Ansible Broker
+If you would like to know more about the OpenShift Ansible Broker I encourage
+you to checkout the project at: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
 
-# INCLUDE A BETTER TRANSITION HERE
+Also consider subscribing to:
 
-### APB authors
-If you are an APB developer, you will likely want to have access to the
-OpenShift local registry. You can enable the internal registry to allow
-your APBs be pushed to the internal registry for faster development.
-Just add an entry to the [registry config entry](https://github.com/openshift/ansible-service-broker/blob/master/docs/config.md#openshift-registry):
-
-```yaml
-registry:
-  # ... other registry entries
-  - type: local_openshift
-    name: lo
-    namespaces:
-      - openshift
-    white_list:
-      - ".*-apb$"
-```
-
-### Deployment Template
-Below you will find the template used to deploy the broker.
-
-```yaml
-apiVersion: v1
-kind: Template
-metadata:
-  name: ansible-service-broker
-objects:
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: asb
-    labels:
-      app: ansible-service-broker
-      service: asb
-    annotations:
-      service.alpha.openshift.io/serving-cert-secret-name: asb-tls
-  spec:
-    ports:
-      - name: port-1338
-        port: 1338
-        targetPort: 1338
-        protocol: TCP
-    selector:
-      app: ansible-service-broker
-      service: asb
-
-- apiVersion: v1
-  kind: Service
-  metadata:
-    name: asb-etcd
-    labels:
-      app: etcd
-      service: asb-etcd
-  spec:
-    ports:
-      - name: port-2379
-        port: 2379
-        targetPort: 2379
-        protocol: TCP
-    selector:
-      app: etcd
-      service: asb-etcd
-
-- apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    name: asb
-    namespace: ansible-service-broker
-
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRoleBinding
-  metadata:
-    name: asb
-  roleRef:
-    name: admin
-    kind: ClusterRole
-    apiGroup: rbac.authorization.k8s.io
-  subjects:
-  - kind: ServiceAccount
-    name: asb
-    namespace: ansible-service-broker
-
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRole
-  metadata:
-    name: asb-auth
-  rules:
-  - apiGroups: [""]
-    resources: ["namespaces"]
-    verbs: ["create", "delete"]
-  - apiGroups: ["authorization.openshift.io"]
-    resources: ["subjectrulesreview"]
-    verbs: ["create"]
-  - apiGroups: ["authorization.k8s.io"]
-    resources: ["subjectaccessreviews"]
-    verbs: ["create"]
-  - apiGroups: ["authentication.k8s.io"]
-    resources: ["tokenreviews"]
-    verbs: ["create"]
-
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRoleBinding
-  metadata:
-    name: asb-auth-bind
-  subjects:
-  - kind: ServiceAccount
-    name: asb
-    namespace: ansible-service-broker
-  roleRef:
-    kind: ClusterRole
-    name: asb-auth
-    apiGroup: rbac.authorization.k8s.io
-
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRole
-  metadata:
-    name: access-asb-role
-  rules:
-  - nonResourceURLs: ["${BROKER_URL_PREFIX}", "${BROKER_URL_PREFIX}/*"]
-    verbs: ["get", "post", "put", "patch", "delete"]
-
-- apiVersion: v1
-  kind: PersistentVolumeClaim
-  metadata:
-    name: etcd
-    namespace: ansible-service-broker
-  spec:
-    accessModes:
-      - ReadWriteOnce
-    resources:
-      requests:
-        storage: 1Gi
-
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    name: asb
-    labels:
-      app: ansible-service-broker
-      service: asb
-  spec:
-    replicas: 1
-    selector:
-      app: ansible-service-broker
-    strategy:
-      type: Rolling
-    template:
-      metadata:
-        labels:
-          app: ansible-service-broker
-          service: asb
-      spec:
-        serviceAccount: asb
-        containers:
-        - image: ansibleplaybookbundle/origin-ansible-service-broker:latest
-          name: asb
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: config-volume
-              mountPath: /etc/ansible-service-broker
-            - name: asb-tls
-              mountPath: /etc/tls/private
-            - name: asb-auth-volume
-              mountPath: /var/run/asb-auth
-          ports:
-            - containerPort: 1338
-              protocol: TCP
-          env:
-          - name: BROKER_CONFIG
-            value: ${BROKER_CONFIG}
-          resources: {}
-          terminationMessagePath: /tmp/termination-log
-          readinessProbe:
-            httpGet:
-              path: /healthz
-              port: 1338
-              scheme: HTTPS
-            initialDelaySeconds: 15
-            timeoutSeconds: 1
-          livenessProbe:
-            httpGet:
-              port: 1338
-              path: /healthz
-              scheme: HTTPS
-            initialDelaySeconds: 15
-            timeoutSeconds: 1
-        volumes:
-          - name: config-volume
-            configMap:
-              name: broker-config
-              items:
-              - key: broker-config
-                path: config.yaml
-          - name: asb-tls
-            secret:
-              secretName: asb-tls
-          - name: asb-auth-volume
-            secret:
-              secretName: asb-auth-secret
-
-- apiVersion: v1
-  kind: DeploymentConfig
-  metadata:
-    name: asb-etcd
-    labels:
-      app: etcd
-      service: asb-etcd
-  spec:
-    replicas: 1
-    selector:
-      app: etcd
-    strategy:
-      type: Rolling
-    template:
-      metadata:
-        labels:
-          app: etcd
-          service: asb-etcd
-      spec:
-        serviceAccount: asb
-        containers:
-        - image: ${ETCD_IMAGE}
-          name: etcd
-          volumeMounts:
-            - name: etcd
-              mountPath: /data
-          imagePullPolicy: IfNotPresent
-          terminationMessagePath: /tmp/termination-log
-          workingDir: /etcd
-          args:
-            - ${ETCD_PATH}
-            - --data-dir=/data
-            - --listen-client-urls=http://0.0.0.0:2379
-            - --advertise-client-urls=http://0.0.0.0:2379
-          ports:
-            - containerPort: 2379
-              protocol: TCP
-          env:
-          - name: ETCDCTL_API
-            value: "3"
-        volumes:
-          - name: etcd
-            persistentVolumeClaim:
-              claimName: etcd
-
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: asb-auth-secret
-    namespace: ansible-service-broker
-  data:
-    username: ${BROKER_USER}
-    password: ${BROKER_PASS}
-
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: ${REGISTRY_SECRET_NAME}
-    namespace: ansible-service-broker
-  data:
-    username: ${DOCKERHUB_USER}
-    password: ${DOCKERHUB_PASS}
-
-- apiVersion: v1
-  kind: ConfigMap
-  metadata:
-    name: broker-config
-    namespace: ansible-service-broker
-    labels:
-      app: ansible-service-broker
-  data:
-    broker-config: |
-      registry:
-        - type: "dockerhub"
-          name: "dh"
-          url: "https://registry.hub.docker.com"
-          org: "ansibleplaybookbundle"
-          tag: "${TAG}"
-          white_list:
-            - ".*-apb$"
-      dao:
-        etcd_host: asb-etcd.ansible-service-broker.svc
-        etcd_port: 2379
-      log:
-        logfile: /var/log/ansible-service-broker/asb.log
-        stdout: true
-        level: debug
-        color: true
-      openshift:
-        host: "${CLUSTER_AUTH_HOST}"
-        ca_file: "${CA_FILE}"
-        bearer_token_file: ""
-        image_pull_policy: "IfNotPresent"
-        sandbox_role: "${SANDBOX_ROLE}"
-        keep_namespace: ${KEEP_NAMESPACE}
-        keep_namespace_on_error: ${KEEP_NAMESPACE_ON_ERROR}
-      broker:
-        dev_broker: ${DEV_BROKER}
-        bootstrap_on_startup: true
-        refresh_interval: "${REFRESH_INTERVAL}"
-        launch_apb_on_bind: ${LAUNCH_APB_ON_BIND}
-        output_request: ${OUTPUT_REQUEST}
-        recovery: true
-        ssl_cert_key: /etc/tls/private/tls.key
-        ssl_cert: /etc/tls/private/tls.crt
-        auto_escalate: ${AUTO_ESCALATE}
-        auth:
-          - type: basic
-            enabled: false
-
-- apiVersion: v1
-  kind: ServiceAccount
-  metadata:
-    name: ansibleservicebroker-client
-    namespace: ansible-service-broker
-
-- apiVersion: rbac.authorization.k8s.io/v1beta1
-  kind: ClusterRoleBinding
-  metadata:
-    name: ansibleservicebroker-client
-  subjects:
-  - kind: ServiceAccount
-    name: ansibleservicebroker-client
-    namespace: ansible-service-broker
-  roleRef:
-    kind: ClusterRole
-    name: access-asb-role
-    apiGroup: rbac.authorization.k8s.io
-
-- apiVersion: v1
-  kind: Secret
-  metadata:
-    name: ansibleservicebroker-client
-    annotations:
-      kubernetes.io/service-account.name: ansibleservicebroker-client
-  type: kubernetes.io/service-account-token
-
-- apiVersion: v1
-  kind: Route
-  metadata:
-    name: asb-1338
-    labels:
-      app: ansible-service-broker
-      service: asb
-  spec:
-    to:
-      kind: Service
-      name: asb
-    port:
-      targetPort: port-1338
-    tls:
-      termination: reencrypt
-
-- apiVersion: ${SVC_CAT_API_VER}
-  kind: ${BROKER_KIND}
-  metadata:
-    name: ansible-service-broker
-  spec:
-    url: https://asb.ansible-service-broker.svc:1338${BROKER_URL_PREFIX}/
-    authInfo:
-      ${{BROKER_AUTH}}
-    caBundle: ${BROKER_CA_CERT}
-
-parameters:
-- description: Service Catalog API Version.  Newer service-catalogs use servicecatalog.k8s.io/v1beta1
-  displayname: Service Catalog API Version.  Newer service-catalogs use servicecatalog.k8s.io/v1beta1
-  name: SVC_CAT_API_VER
-  value: servicecatalog.k8s.io/v1beta1
-
-- description: Service Broker kind. Newer service-catalogs use ClusterServiceBroker
-  displayname: Service Broker kind. Newer service-catalogs use ClusterServiceBroker
-  name: BROKER_KIND
-  value: ClusterServiceBroker
-
-- description: Service Broker CA Cert.
-  displayname: Service Broker kind.
-  name: BROKER_CA_CERT
-  value: ""
-
-- description: Service Broker url prefix for the cluster
-  displayname: ASB Url Prefix
-  name: BROKER_URL_PREFIX
-  value: "/ansible-service-broker"
-
-- description: Broker Auth Info
-  displayname: Broker Auth Info
-  name: BROKER_AUTH
-  value: '{ "bearer": { "secretRef": { "kind": "Secret", "namespace": "ansible-service-broker", "name": "ansibleservicebroker-client" } } }'
-
-- description: Suffix for OpenShift routes
-  displayname: Suffix for OpenShift routes
-  name: ROUTING_SUFFIX
-  value: "172.17.0.1.nip.io"
-
-- description: Container Image to use for etcd in format of imagename:tag
-  displayname: etcd Image
-  name: ETCD_IMAGE
-  value: quay.io/coreos/etcd:latest
-
-- description: Path of the etcd binary
-  displayname: etcd path
-  name: ETCD_PATH
-  value: /usr/local/bin/etcd
-
-- description: Configuration filepath for Ansible Service Broker
-  displayname: Ansible Service Broker Configuration File
-  name: BROKER_CONFIG
-  value: /etc/ansible-service-broker/config.yaml
-
-- description: APB Image Tag
-  displayname: APB Image Tag
-  name: TAG
-  value: latest
-
-- description: OpenShift User Password
-  displayname: OpenShift User Password
-  name: OPENSHIFT_PASS
-  value: admin
-
-- description: OpenShift User Name
-  displayname: OpenShift User Name
-  name: OPENSHIFT_USER
-  value: admin
-
-- description: OpenShift Target URL
-  displayname: OpenShift Target URL
-  name: OPENSHIFT_TARGET
-  value: kubernetes.default
-
-- description: Registry Secret Name
-  displayname: Registry Secret Name
-  name: REGISTRY_SECRET_NAME
-  value: registry-auth-secret
-
-- description: Registry Auth Type
-  displayname: Registry Auth Type
-  name: REGISTRY_AUTH_TYPE
-  value: secret
-
-- description: Include Broker Development Endpoint
-  displayname: Include Broker Development Endpoint
-  name: DEV_BROKER
-  value: "true"
-
-- description: Launch APB on bind
-  displayname: Launch APB on bind
-  name: LAUNCH_APB_ON_BIND
-  value: "false"
-
-- description: Refresh the available broker images every interval of seconds
-  displayname: Refresh Interval
-  name: REFRESH_INTERVAL
-  value: "600s"
-
-- description: Output broker requests to log
-  displayname: Output broker requests to log
-  name: OUTPUT_REQUEST
-  value: "true"
-
-- description: Auto escalate the broker. Will remove user impresonation
-  displayname: Auto Escalate
-  name: AUTO_ESCALATE
-  value: "false"
-
-############################################################
-# NOTE: These values MUST be base64 encoded.
-# http://red.ht/2wbrCYo states "The value associated with
-# keys in the data map must be base64 encoded."
-############################################################
-- description: Broker user password
-  displayname: Broker user password
-  name: BROKER_PASS
-  value: YWRtaW4=
-
-- description: Broker user name
-  displayname: Broker user name
-  name: BROKER_USER
-  value: YWRtaW4=
-
-- description: Dockerhub user password
-  displayname: Dockerhub user password
-  name: DOCKERHUB_PASS
-  value: ""
-
-- description: Dockerhub user name
-  displayname: Dockerhub user name
-  name: DOCKERHUB_USER
-  value: ""
-
-############################################################
-# NOTE: Default behavior for these are going to use the kubernetes
-# InClusterConfig. These are typically overridden for running
-# the broker outside of a cluster. Under normal circumstances,
-# you probably want to leave these blank.
-############################################################
-- description: Service Account CAFile Path
-  displayname: Service Account CAFile Path
-  name: CA_FILE
-  value: ""
-
-- description: Cluster Authentication Host
-  displayname: Cluster Authentication Host
-  name: CLUSTER_AUTH_HOST
-  value: ""
-
-- description: Role to use for APB Sandboxes
-  displayname: Role to use for APB Sandboxes
-  name: SANDBOX_ROLE
-  value: "edit"
-
-- description: Always keep the namespace after an APB is executed.
-  displayname: Always keep the namespace after an APB is executed.
-  name: KEEP_NAMESPACE
-  value: "false"
-
-- description: Always keep the namespace after an APB is executed and has errored.
-  displayname: Always keep the namespace after an APB is executed and has errored.
-  name: KEEP_NAMESPACE_ON_ERROR
-  value: "true"
-############################################################
-```
+* IRC: Freenode #asbroker
+* Mailing list: [https://www.redhat.com/mailman/listinfo/ansible-service-broker](https://www.redhat.com/mailman/listinfo/ansible-service-broker)
+* Github: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
+* YouTube: [ansible-service-broker](https://www.youtube.com/channel/UC04eOMIMiV06_RSZPb4OOBw) 
