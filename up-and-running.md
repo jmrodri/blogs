@@ -1,21 +1,44 @@
 # DRAFT
 # Up and running with the Ansible Broker
 
+## Overview
+
+In OpenShift 3.7 we introduced two new concepts, Service Catalog and Brokers.
+The Service Catalog gives a place for various service providers to list their
+services. It also helps users find and acquire these services for their needs.
+
+For more detailed information about Service Catalog checkout Paul Morie's
+[Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/)
+
+To be useful, the Service Catalog needs content.  What drives the Service
+Catalog's content is the second concept introduced in OpenShift
+3.7: brokers. Service Brokers implement the [Open Service Broker
+API](https://github.com/openservicebrokerapi/servicebroker) (OSB API). *GIVE A
+BLURBL ABOUT OSB API*
+
+Brokers are responsible for a set of services. You can have brokers that
+only do one service, for example a MySQL broker. You can have
+a broker that offers a specific type of facility, like the OpenShift Template
+broker which can support a collection of services based on templates. Or you can
+have a more powerful, generic broker like the OpenShift Ansible Broker which supplies a
+set of services based on Ansible Playbook Bundles (APBs).
+
+APBs provide a new method for defining and distributing container applications
+in OpenShift, consisting of a bundle of Ansible playbooks build into a container
+image with an Ansible runtime.  APBs leverage Ansible to create a standard
+mechanism for automating complex deployments.
+
+For more detailed information about Ansible Playbook Bundles checkout the
+[OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
+briefing by Todd Sanders and John Matthews.
+
+Now that you know what the OpenShift Ansible Broker is, let's get one up and
+running.
+
 ## Setup
-In this blog we will discuss how to get up and running with the OpenShift
-Ansible broker. What is the Ansible broker you ask?
-
-> The OpenShift Ansible Broker (OAB) is an implementation of the Open Service
-> Broker (OSB) API that manages applications defined by Ansible Playbook Bundles
-> (APBs). APBs provide a new method for defining and distributing container
-> applications in OpenShift Origin, consisting of a bundle of Ansible playbooks
-> built into a container image with an Ansible runtime. APBs leverage Ansible to
-> create a standard mechanism for automating complex deployments.
-[Source](#)
-
-There are a variety of ways of setting up the broker from templates to Makefile
-targets to the OpenShift installer. For the purpose of this blog post we will
-focus on using a simple OpenShift template to launch the broker.
+As with most applications there are a variety of ways of setting up the broker
+from templates to Makefile targets to the OpenShift installer. For the purpose
+of this blog post we will focus on using a simple OpenShift template to launch the broker.
 
 You will need an OpenShift 3.7 cluster running with the service catalog enabled.
 [INSERT LINK TO HOW TO DO THAT].  I typically just start a cluster with the
@@ -106,6 +129,12 @@ We will now provision a PostgreSQL APB, create a binding, and provision a
 MediaWiki APB. Visit the console UI at https://127.0.0.1:8443, after accepting the
 certificate, you should see the login screen:
 
+# ADD MORE CONTEXT
+
+## Provision MediaWiki APB
+## Provision PostgreSQL APB
+## Create and Consume Binding
+## Verify MediaWiki
 ![screenshot of login screen](up-and-running-login-screen.png)
 
 Login with admin:admin. You should see a list of APB services:
@@ -169,6 +198,15 @@ So what have we done? We brought up a 3.7 cluster, deployed the Ansible broker,
 listed and provisioned an APBs.
 
 # INCLUDE A BETTER ENDING
+<!--
+* actively developed project
+* encourage folks to subscribe to our mailing list
+* encourse folks to subscribe to our youtube channel
+* share project resources
+    * IRC channel
+    * github repo link
+    * youtube channel, etc
+-->
 
 # INCLUDE A BETTER TRANSITION HERE
 
@@ -462,18 +500,18 @@ objects:
       openshift:
         host: "${CLUSTER_AUTH_HOST}"
         ca_file: "${CA_FILE}"
-        bearer_token_file: "${BEARER_TOKEN_FILE}"
-        image_pull_policy: "${IMAGE_PULL_POLICY}"
+        bearer_token_file: ""
+        image_pull_policy: "IfNotPresent"
         sandbox_role: "${SANDBOX_ROLE}"
         keep_namespace: ${KEEP_NAMESPACE}
         keep_namespace_on_error: ${KEEP_NAMESPACE_ON_ERROR}
       broker:
         dev_broker: ${DEV_BROKER}
-        bootstrap_on_startup: ${BOOTSTRAP_ON_STARTUP}
+        bootstrap_on_startup: true
         refresh_interval: "${REFRESH_INTERVAL}"
         launch_apb_on_bind: ${LAUNCH_APB_ON_BIND}
         output_request: ${OUTPUT_REQUEST}
-        recovery: ${RECOVERY}
+        recovery: true
         ssl_cert_key: /etc/tls/private/tls.key
         ssl_cert: /etc/tls/private/tls.crt
         auto_escalate: ${AUTO_ESCALATE}
@@ -620,11 +658,6 @@ parameters:
   name: LAUNCH_APB_ON_BIND
   value: "false"
 
-- description: Will automatically bootstrap the broker on startup
-  displayname: Bootstrap On Startup
-  name: BOOTSTRAP_ON_STARTUP
-  value: "true"
-
 - description: Refresh the available broker images every interval of seconds
   displayname: Refresh Interval
   name: REFRESH_INTERVAL
@@ -635,20 +668,10 @@ parameters:
   name: OUTPUT_REQUEST
   value: "true"
 
-- description: Recover unfinshed jobs on restart
-  displayname: Recovery
-  name: RECOVERY
-  value: "true"
-
 - description: Auto escalate the broker. Will remove user impresonation
   displayname: Auto Escalate
   name: AUTO_ESCALATE
   value: "false"
-
-- description: APB ImagePullPolicy
-  displayname: APB ImagePullPolicy
-  name: IMAGE_PULL_POLICY
-  value: "IfNotPresent"
 
 ############################################################
 # NOTE: These values MUST be base64 encoded.
@@ -684,11 +707,6 @@ parameters:
 - description: Service Account CAFile Path
   displayname: Service Account CAFile Path
   name: CA_FILE
-  value: ""
-
-- description: Service Account Bearer Token File
-  displayname: Service Account Bearer Token File
-  name: BEARER_TOKEN_FILE
   value: ""
 
 - description: Cluster Authentication Host
