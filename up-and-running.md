@@ -75,17 +75,10 @@ to build a new example application in Ruby.
 
 With the project now created, we can deploy the broker. We've assembled an
 OpenShift [template](https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml)
-that can be used. In order to use this template we need to get the CA certificate
-to use for the broker.
+that can be used. Now let's download the template, process the variables, and create the broker.
 
 ```bash
-VARS="-p BROKER_CA_CERT=$(oc get secret -n kube-service-catalog -o go-template='{{ range .items }}{{ if eq .type "kubernetes.io/service-account-token" }}{{ index .data "service-ca.crt" }}{{end}}{{"\n"}}{{end}}' | tail -n 1)"
-```
-
-The certificate parameter is now stored. Now let's download the template, process the variables, and create the broker.
-
-```bash
-curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" $VARS -f - | oc create -f -
+curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" -f - | oc create -f -
 ```
 
 A successful deployment will look like the following.
