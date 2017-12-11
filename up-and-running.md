@@ -136,24 +136,24 @@ create and consume the binding to the PostgreSQL database. Finally we will
 verify the MediaWiki service is up and running.
 
 ## Provision PostgreSQL APB
-We need to visit the console UI at https://127.0.0.1:8443, after accepting the
+1. We need to visit the console UI at https://127.0.0.1:8443, after accepting the
 certificate, you should see the login screen:
 ![screenshot of login screen](up-and-running-login-screen.png)
 
-Login with admin:admin. You should see a list of APB services:
+1. Login with admin:admin. You should see a list of APB services:
 
 ![screenshot of apbs](up-and-running-apb-list-ui.png)
 
-Select the PostgreSQL APB, follow the prompts. Create a new project called
+1. Select the PostgreSQL APB, follow the prompts. Create a new project called
 blog-project, Blog Project.
 
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
-Select the Development plan.
+1. Select the Development plan.
 
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
-Enter in a password, keep the other values as defaults is fine.
+1. Enter in a password, keep the other values as defaults is fine.
 
 ![screenshot of config selection](up-and-running-psql-3-config.png)
 
@@ -173,15 +173,15 @@ has high-availability, a good bit of persistence storage, and more resources.
 The PostgreSQL APB exposes two plans: development and production.
 
 ## Provision MediaWiki APB
-Next, let's provision the MediaWiki APB.
+1. Next, let's provision the MediaWiki APB.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
-Configure MediaWiki
+1. Configure MediaWiki
 
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
 
-We can see it deploying, and that PostgreSQL has already been deployed.
+1. We can see it deploying, and that PostgreSQL has already been deployed.
 
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
