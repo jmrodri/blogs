@@ -141,20 +141,16 @@ certificate, you should see the login screen:
 ![screenshot of login screen](up-and-running-login-screen.png)
 
 1. Login with admin:admin. You should see a list of APB services:
-
 ![screenshot of apbs](up-and-running-apb-list-ui.png)
 
 1. Select the PostgreSQL APB, follow the prompts. Create a new project called
 blog-project, Blog Project.
-
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
 1. Select the Development plan.
-
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
 1. Enter in a password, keep the other values as defaults is fine.
-
 ![screenshot of config selection](up-and-running-psql-3-config.png)
 
 Above we selected an APB to provision. We created a project to put the service
@@ -174,15 +170,12 @@ The PostgreSQL APB exposes two plans: development and production.
 
 ## Provision MediaWiki APB
 1. Next, let's provision the MediaWiki APB.
-
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
 1. Configure MediaWiki
-
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
 
 1. We can see it deploying, and that PostgreSQL has already been deployed.
-
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
 
