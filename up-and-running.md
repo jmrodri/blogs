@@ -1,5 +1,5 @@
 # DRAFT
-# Up and running with the Ansible Broker
+# Up and running with the OpenShift Ansible Broker
 
 ## Overview
 
@@ -21,7 +21,7 @@ only do one service, for example a MySQL broker. You can have
 a broker that offers a specific type of facility, like the OpenShift Template
 broker which can support a collection of services based on templates. Or you can
 have a more powerful, generic broker like the OpenShift Ansible Broker which supplies a
-set of services based on Ansible Playbook Bundles (APBs).
+set of services based on Ansible Playbook Bundle (APB) application definitions.
 
 APBs provide a new method for defining and distributing container applications
 in OpenShift, consisting of a bundle of Ansible playbooks build into a container
@@ -36,7 +36,7 @@ Now that you know what the OpenShift Ansible Broker is, let's get one up and
 running.
 
 ## Setup
-As with most applications there are a variety of ways of setting up the broker
+As with most applications, there are a variety of ways of setting up the broker
 from templates to Makefile targets to the OpenShift installer. For the purpose
 of this blog post we will focus on using a simple OpenShift template to launch the broker.
 
@@ -194,7 +194,7 @@ application.
 ![screenshot of results selection](up-and-running-psql-5-results.png)
 
 ## Provision MediaWiki APB
-While the PostgreSQL APB should be provisioning, we can provision the next APB.
+While the PostgreSQL APB is provisioning, we can provision the next APB.
 
 1. Let's provision the MediaWiki APB.
 
