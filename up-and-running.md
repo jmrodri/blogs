@@ -173,36 +173,44 @@ service. We will see a different set of parameters when we provision the
 MediaWiki APB later.
 
 One concept you may have noticed was that of plans.  Plans are another OSB
-API concept that are akin to tiers or pricing plans. For
-example, you could have a development plan that has minimal resources,lower
-cost and little to no persistence storage. This would let users use a service
-for development purposes. Or you could have for example, a production plan, that
-has high-availability, a good bit of persistence storage, and more resources.
-The PostgreSQL APB exposes two plans: development and production.
+API concept that are akin to tiers or pricing plans. For example, you could
+have a development plan that has minimal resources, lower cost and little to
+no persistence storage. This would let users use a service for development purposes.
+Or you could have for example, a production plan, that has high-availability, a good
+bit of persistence storage, and more resources. The PostgreSQL APB exposes
+two plans: development and production.
 
 ## Create the Binding
-Bindings is a link between a service instance and an application. To save time,
+A bindings is a link between a service instance and an application. To save time,
 we will create a binding while provisioning the PostgreSQL APB. This will save
 the credentials for the PostgreSQL DB into a secret that can be shared with
 another applications.
 
 ![screenshot of create binding selection](up-and-running-psql-4-binding.png)
 
-## Provision MediaWiki APB
-1. Next, let's provision the MediaWiki APB.
-![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
-
-1. Configure MediaWiki
-![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
-
-1. We can see it deploying, and that PostgreSQL has already been deployed.
-![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
-![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
-
+While the PostgreSQL APB provisions, we can move on to provision the next
+application.
 
 ![screenshot of results selection](up-and-running-psql-5-results.png)
 
+## Provision MediaWiki APB
+While the PostgreSQL APB should be provisioning, we can provision the next APB.
+
+1. Let's provision the MediaWiki APB.
+
+![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
+
+2. Configure MediaWiki
+
+![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
+
+3. We can see it deploying, and that PostgreSQL has already been deployed.
+
+![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
+
 ## Consume Binding
+![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
+
 ## Verify MediaWiki
 
 ### List the services from the CLI
