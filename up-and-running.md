@@ -200,7 +200,8 @@ While the PostgreSQL APB should be provisioning, we can provision the next APB.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
-2. Configure MediaWiki
+2. Configure MediaWiki, select the *Blog Project* we created earlier and enter
+   in passwords.
 
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
 
@@ -208,15 +209,18 @@ While the PostgreSQL APB should be provisioning, we can provision the next APB.
 
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 
+4. Once MediaWiki has been provisioned. We see the default startup page.
+
+![screenshot of default mediawiki startpage](up-and-running-mediawiki-startpage.png)
+
+
 ## Consume Binding
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
-
-## Verify MediaWiki
-
 ### List the services from the CLI
 The UI isn't the only way to interact with the broker. We can list the
 provisioned services using the CLI..
 
+## Verify MediaWiki
 ```bash
 $ oc get serviceinstances --all-namespaces
 NAMESPACE      NAME                      AGE
