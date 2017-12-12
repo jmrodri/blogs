@@ -238,12 +238,18 @@ now add this binding to the MediaWiki application.
    be redeployed automatically.
 
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
+
+5.  We took the PostgreSQL credentials binding, added it to the MediaWiki
+application. When MediaWiki redeployed it took the environment variables and
+used them to connect itself to the database. If we visit the MediaWiki
+application again, we will see that we now have a fully configured wiki.
+
 ![screenshot of mediawiki startpage with database](up-and-running-mediawiki-startpage-withdb.png)
+
 ### List the services from the CLI
 The UI isn't the only way to interact with the broker. We can list the
 provisioned services using the CLI..
 
-## Verify MediaWiki
 ```bash
 $ oc get serviceinstances --all-namespaces
 NAMESPACE      NAME                      AGE
@@ -252,6 +258,7 @@ blog-project   dh-postgresql-apb-t84wc   7m
 ```
 
 Let's checkout the secrets in the blog-project
+
 ```bash
 $ oc get secrets -n blog-project | awk -F, 'BEGIN{IGNORECASE=1}; NR==1 {print $1}; /^dh/ {print $1}'
 NAME                                        TYPE                                  DATA      AGE
@@ -260,7 +267,7 @@ dh-postgresql-apb-parameters43rfr           Opaque                              
 dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                                6         27m
 ```
 
-So what have we done? We brought up a 3.7 cluster, deployed the Ansible broker,
+What have we done? We brought up a 3.7 cluster, deployed the OpenShift Ansible Broker,
 listed and provisioned a couple of APBs.
 
 ## Come check out Ansible Broker
