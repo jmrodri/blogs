@@ -39,8 +39,7 @@ from templates to Makefile targets to the OpenShift installer. For the purpose
 of this blog post we will focus on using a simple OpenShift template to launch the broker.
 
 You will need an OpenShift 3.7 cluster running with the service catalog enabled.
-[INSERT LINK TO HOW TO DO THAT].  I typically just start a cluster with the
-following command:
+I typically just start a cluster with the following command:
 
 ```bash
 oc cluster up --service-catalog=true
@@ -247,7 +246,7 @@ application again, we will see that we now have a fully configured wiki.
 
 ### List the services from the CLI
 The UI isn't the only way to interact with the broker. We can list the
-provisioned services using the CLI..
+provisioned services using the CLI.
 
 ```bash
 $ oc get serviceinstances --all-namespaces
