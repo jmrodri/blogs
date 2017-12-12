@@ -1,4 +1,3 @@
-# DRAFT
 # Up and running with the OpenShift Ansible Broker
 
 ## Overview
