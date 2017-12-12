@@ -123,7 +123,9 @@ As we mentioned above, the Broker implements the OSB API. This API contains some
 key verbs: provision, bind, and others. Provision will typically deploy a
 service in your cluster. In the case of the Ansible Broker, it will provision
 your service using the Ansible Playbook Bundle meta-container invoking the
-provision playbook. We will provision a PostgreSQL APB and a MediaWiki APB.
+provision playbook. We will provision a MediaWiki application that is backed by
+a PostgreSQL DB. We will accomplish that by provisioning a PostgreSQL APB and a
+MediaWiki APB.
 
 Once the two APBs have been provisioned, we will create a binding. Bind is
 another one of the OSB API verbs used to provide credentials / coordinates for
@@ -136,21 +138,31 @@ create and consume the binding to the PostgreSQL database. Finally we will
 verify the MediaWiki service is up and running.
 
 ## Provision PostgreSQL APB
+Here we will provision the PostgreSQL APB
+
 1. We need to visit the console UI at https://127.0.0.1:8443, after accepting the
 certificate, you should see the login screen:
+
 ![screenshot of login screen](up-and-running-login-screen.png)
 
-1. Login with admin:admin. You should see a list of APB services:
+2. Login with `admin:admin`. You should see a list of services, some marked 
+with APB:
+
 ![screenshot of apbs](up-and-running-apb-list-ui.png)
 
-1. Select the PostgreSQL APB, follow the prompts. Create a new project called
-blog-project, Blog Project.
+3. From the list of services, select the PostgreSQL APB. You will be prompted for some
+information as you provision the service.
+
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
-1. Select the Development plan.
+4. Next step is to choose a plan, select the Development plan.
+
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
-1. Enter in a password, keep the other values as defaults is fine.
+5. The configuration screen will ask you for some information.  Create a new project named
+*blog-project* and Description of *Blog Project*.  Then enter a password, it is fine to
+keep the other values as defaults.
+
 ![screenshot of config selection](up-and-running-psql-3-config.png)
 
 Above we selected an APB to provision. We created a project to put the service
@@ -160,13 +172,21 @@ exposed to OpenShift. This allows the UI to be catered to the particular
 service. We will see a different set of parameters when we provision the
 MediaWiki APB later.
 
-Once concept you have have noticed was that of plans.  Plans are another OSB
+One concept you may have noticed was that of plans.  Plans are another OSB
 API concept that are akin to tiers or pricing plans. For
 example, you could have a development plan that has minimal resources,lower
 cost and little to no persistence storage. This would let users use a service
 for development purposes. Or you could have for example, a production plan, that
 has high-availability, a good bit of persistence storage, and more resources.
 The PostgreSQL APB exposes two plans: development and production.
+
+## Create the Binding
+Bindings is a link between a service instance and an application. To save time,
+we will create a binding while provisioning the PostgreSQL APB. This will save
+the credentials for the PostgreSQL DB into a secret that can be shared with
+another applications.
+
+![screenshot of create binding selection](up-and-running-psql-4-binding.png)
 
 ## Provision MediaWiki APB
 1. Next, let's provision the MediaWiki APB.
@@ -179,14 +199,10 @@ The PostgreSQL APB exposes two plans: development and production.
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
 
-## Create and Consume Binding
-Let's create a binding. This will save the credentials for the PostgreSQL DB
-into a secret that can be shared with other applications.
-
-![screenshot of create binding selection](up-and-running-psql-4-binding.png)
 
 ![screenshot of results selection](up-and-running-psql-5-results.png)
 
+## Consume Binding
 ## Verify MediaWiki
 
 ### List the services from the CLI
