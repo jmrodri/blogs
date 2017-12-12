@@ -13,8 +13,7 @@ For more detailed information about Service Catalog checkout Paul Morie's
 To be useful, the Service Catalog needs content.  What drives the Service
 Catalog's content is the second concept introduced in OpenShift
 3.7: brokers. Service Brokers implement the [Open Service Broker
-API](https://github.com/openservicebrokerapi/servicebroker) (OSB API). *GIVE A
-BLURBL ABOUT OSB API*
+API](https://github.com/openservicebrokerapi/servicebroker) (OSB API).
 
 Brokers are responsible for a set of services. You can have brokers that
 only do one service, for example a MySQL broker. You can have
@@ -200,8 +199,8 @@ While the PostgreSQL APB is provisioning, we can provision the next APB.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
-2. Configure MediaWiki, select the *Blog Project* we created earlier and enter
-   in passwords.
+2. Configure MediaWiki, in the *Add to Project* drop-down select the *Blog Project*
+that we created earlier. Also enter in passwords.
 
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
 
@@ -209,13 +208,37 @@ While the PostgreSQL APB is provisioning, we can provision the next APB.
 
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 
-4. Once MediaWiki has been provisioned. We see the default startup page.
+4. Once MediaWiki has been provisioned, we can browse to it. You can see the
+   default start page. Take note as at this point we don't have a wiki setup
+   yet. We need to bind MediaWiki to the PostgreSQL DB.
 
 ![screenshot of default mediawiki startpage](up-and-running-mediawiki-startpage.png)
 
 
 ## Consume Binding
+With both the PostgreSQL DB and the MediaWiki application provisioned. Let's
+bind them together. We created a binding during provisioning of the DB. We will
+now add this binding to the MediaWiki application.
+
+1. Navigate to the Secrets menu of the "Blog Project" project.
+
+![screenshot of postgresql secret](up-and-running-secrets-menu.png)
+
+2. Select the `dh-postgresql-apb-*-credentials-*` secret. Click the Add to
+   Application button
+
+![screenshot of postgresql secret](up-and-running-secret.png)
+
+3. From the Add to Application modal, select **mediawiki123** from the list. And
+   choose Environment variables.
+
+![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret.png)
+
+4. Adding the secret to the MediaWiki environment will cause the application to
+   be redeployed automatically.
+
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
+![screenshot of mediawiki startpage with database](up-and-running-mediawiki-startpage-withdb.png)
 ### List the services from the CLI
 The UI isn't the only way to interact with the broker. We can list the
 provisioned services using the CLI..
