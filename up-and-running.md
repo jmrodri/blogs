@@ -6,14 +6,14 @@ In OpenShift 3.7, we introduced two new concepts: Service Catalog and Service Br
 The Service Catalog is a self-service marketplace where service consumers can find
 and acquire services. It’s also a place for various service providers to list their
 services to these consumers. (_For more detailed information about Service Catalog
-checkout Paul Morie's [Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/)_)
+check out Paul Morie's [Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/)_)
 
 To be useful to service consumers, the Service Catalog needs to be populated with
 content. This content is made available to the Service Catalog through Brokers,
 which implement the [Open Service Broker API](https://github.com/openservicebrokerapi/servicebroker) (OSB API). The broker is responsible for informing the Service Catalog of the
 services it can provision.
 
-Brokers may be responsible for only a single service, for example a MySQL
+Brokers may be responsible for only a single service, for example, a MySQL
 broker, or they may offer a specific type of facility, like the OpenShift
 Template broker that supports a collection of services based on templates.
 Finally, brokers may be generic and a bit more powerful like the OpenShift
@@ -24,7 +24,7 @@ APBs provide a new method for defining and distributing simple to complex
 multi-container services on OpenShift, consisting of a bundle of Ansible
 Playbooks built into a container image with an Ansible runtime. APBs leverage
 Ansible to create a standard mechanism for automating complex deployments. (_For
-more detailed information about Ansible Playbook Bundles checkout the [OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
+more detailed information about Ansible Playbook Bundles check out the [OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
 briefing by Todd Sanders and John Matthews._)
 
 Now that you know what the OpenShift Ansible Broker is, let's get one up and
@@ -33,7 +33,7 @@ running.
 ## Setup
 As with most applications, there are a variety of ways of setting up the broker
 from templates to Makefile targets to the OpenShift installer. For the purpose
-of this blog post we will focus on using a simple OpenShift template to launch the broker.
+of this blog post, we will focus on using a simple OpenShift template to launch the broker.
 
 You will need an OpenShift 3.7 cluster running with the service catalog enabled.
 I typically just start a cluster with the following command:
@@ -122,13 +122,13 @@ a PostgreSQL DB. We will accomplish that by provisioning a PostgreSQL APB and a
 MediaWiki APB.
 
 Once the two APBs have been provisioned, we will create a binding. Bind is
-another one of the OSB API verbs used to provide credentials / coordinates for
+another one of the OSB API verbs used to provide credentials/coordinates for
 specific services. We will create a binding for the PostgreSQL service. Like the
 provision, the Broker will use the PostgreSQL APB meta-container to create the bind
 by invoking the bind playbook.
 
-Let's recap, first we will provision two APBs: PostgreSQL and MediaWiki. Then
-create and consume the binding to the PostgreSQL database. Finally we will
+Let's recap, first, we will provision two APBs: PostgreSQL and MediaWiki. Then
+create and consume the binding to the PostgreSQL database. Finally, we will
 verify the MediaWiki service is up and running.
 
 ## Provision PostgreSQL APB
@@ -161,24 +161,24 @@ keep the other values as defaults.
 
 Above we selected an APB to provision. We created a project to put the service
 in to. We supplied some configuration parameters to the service. The parameters
-are actually supplied by the APB. That is part of the services metadata which is
+are actually supplied by the APB. That is part of the service's metadata which is
 exposed to OpenShift. This allows the UI to be catered to the particular
 service. We will see a different set of parameters when we provision the
 MediaWiki APB later.
 
 One concept you may have noticed was that of plans.  Plans are another OSB
-API concept that are akin to tiers or pricing plans. For example, you could
+API concept that is akin to tiers or pricing plans. For example, you could
 have a development plan that has minimal resources, lower cost and little to
 no persistence storage. This would let users use a service for development purposes.
-Or you could have for example, a production plan, that has high-availability, a good
+Or you could have, for example, a production plan, that has high-availability, a good
 bit of persistence storage, and more resources. The PostgreSQL APB exposes
 two plans: development and production.
 
 ## Create the Binding
-A bindings is a link between a service instance and an application. To save time,
+A binding is a link between a service instance and an application. To save time,
 we will create a binding while provisioning the PostgreSQL APB. This will save
 the credentials for the PostgreSQL DB into a secret that can be shared with
-another applications.
+other applications.
 
 ![screenshot of create binding selection](up-and-running-psql-4-binding.png)
 
@@ -195,7 +195,7 @@ While the PostgreSQL APB is provisioning, we can provision the next APB.
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
 2. Configure MediaWiki, in the *Add to Project* drop-down select the *Blog Project*
-that we created earlier. Also enter in passwords.
+that we created earlier. Also, enter in passwords.
 
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
 
@@ -252,7 +252,7 @@ blog-project   dh-mediawiki-apb-rhzcs    1m
 blog-project   dh-postgresql-apb-t84wc   7m
 ```
 
-Let's checkout the secrets in the blog-project
+Let's check out the secrets in the blog-project
 
 ```bash
 $ oc get secrets -n blog-project | awk -F, 'BEGIN{IGNORECASE=1}; NR==1 {print $1}; /^dh/ {print $1}'
@@ -267,7 +267,7 @@ listed and provisioned a couple of APBs.
 
 ## Come check out Ansible Broker
 If you would like to know more about the OpenShift Ansible Broker I encourage
-you to checkout the project at: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
+you to check out the project at: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
 
 Also consider subscribing to:
 
