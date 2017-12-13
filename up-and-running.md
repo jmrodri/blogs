@@ -5,8 +5,8 @@
 In OpenShift 3.7, we introduced two new concepts: Service Catalog and Service Brokers.
 The Service Catalog is a self-service marketplace where service consumers can find
 and acquire services. It’s also a place for various service providers to list their
-services to these consumers. (_For more detailed information about Service Catalog
-check out Paul Morie's [Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/)_)
+services to consumers. _(For more detailed information about Service Catalog
+check out Paul Morie's [Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/))_
 
 To be useful to service consumers, the Service Catalog needs to be populated with
 content. This content is made available to the Service Catalog through Brokers,
@@ -23,31 +23,28 @@ Ansible Broker, which exposes services based on the Ansible Playbook Bundle
 APBs provide a new method for defining and distributing simple to complex
 multi-container services on OpenShift, consisting of a bundle of Ansible
 Playbooks built into a container image with an Ansible runtime. APBs leverage
-Ansible to create a standard mechanism for automating complex deployments. (_For
+Ansible to create a standard mechanism for automating complex deployments. _(For
 more detailed information about Ansible Playbook Bundles check out the [OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
-briefing by Todd Sanders and John Matthews._)
+briefing by Todd Sanders and John Matthews.)_
 
 Now that you know what the OpenShift Ansible Broker is, let's get one up and
 running.
 
 ## Setup
-As with most applications, there are a variety of ways of setting up the broker
-from templates to Makefile targets to the OpenShift installer. For the purpose
-of this blog post, we will focus on using a simple OpenShift template to launch the broker.
+As with most applications, there are a variety of ways to setup the broker. This can be done
+using templates, Makefile targets, or from the OpenShift installer. For this blog, we will
+focus on using a simple OpenShift template to launch the broker.
 
-You will need an OpenShift 3.7 cluster running with the service catalog enabled.
-I typically just start a cluster with the following command:
+You will need an OpenShift Container Platform 3.7 cluster running with the Service Catalog enabled.
+Typically, I just start a cluster with the following command:
 
 ```bash
 oc cluster up --service-catalog=true
 ```
 
-**NOTE:** if you are using Fedora 26 ensure you are using docker-1.13.1-44 or newer:
-https://bugzilla.redhat.com/show_bug.cgi?id=1504709
-
-Once the cluster is running, we can install the OpenShift Ansible Broker into the
-cluster and register it with the service catalog. First, we will need a new
-project to run the broker in. Using the CLI let's create the
+Once the cluster is running, we can install the OpenShift Ansible Broker onto the
+cluster and register it with the Service Catalog. First, we will need a new
+project to run the broker in. Using the CLI, let's create the
 `ansible-service-broker` project.
 
 ```bash
@@ -67,15 +64,15 @@ You can add applications to this project with the 'new-app' command. For example
 to build a new example application in Ruby.
 ```
 
-With the project now created, we can deploy the broker. We've assembled an
+With the project created, we can now deploy the broker. We've assembled an
 OpenShift [template](https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml)
-that can be used. Now let's download the template, process the variables, and create the broker.
+that can be used for this purpose. Let's download the template, process the variables, and create an OpenShift Ansible Broker instance.
 
 ```bash
 curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" -f - | oc create -f -
 ```
 
-A successful deployment will look like the following.
+A successful deployment will look like this:
 
 ```bash
 service "asb" created
@@ -98,9 +95,9 @@ route "asb-1338" created
 clusterservicebroker "ansible-service-broker" created
 ```
 
-We now have an OpenShift cluster with a Service Catalog and Ansible Broker
-running.  You can communicate with the broker through the service catalog
-using the oc command line. Here is an example of listing out the available
+We now have an OpenShift cluster with the Service Catalog and Ansible Broker
+running.  You can communicate with the Broker through the Service Catalog
+using the oc command line. Here is an example of listing all the available
 APB service classes:
 
 ```bash
@@ -109,113 +106,119 @@ oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.n
 
 It may take some time for the broker to sync the APBs into the catalog. If you
 get no APBs at first, run it again in a few seconds. Once they are available we
-can provision one.
+can start provisioning services.
 
-## Provision an APB
+## Provisioning Services
 
-As we mentioned above, the Broker implements the OSB API. This API contains some
-key verbs: provision, bind, and others. Provision will typically deploy a
-service in your cluster. In the case of the Ansible Broker, it will provision
-your service using the Ansible Playbook Bundle meta-container invoking the
-provision playbook. We will provision a MediaWiki application that is backed by
-a PostgreSQL DB. We will accomplish that by provisioning a PostgreSQL APB and a
-MediaWiki APB.
+As mentioned above, the Broker implements the Open Service Broker API. This API
+contains some key verbs: provision, bind, and others. Provision will typically deploy a
+service in your cluster. In the case of the OpenShift Ansible Broker, it provisions
+a service using the Ansible Playbook Bundle meta-container and invoking the
+provision playbook.
 
-Once the two APBs have been provisioned, we will create a binding. Bind is
-another one of the OSB API verbs used to provide credentials/coordinates for
-specific services. We will create a binding for the PostgreSQL service. Like the
-provision, the Broker will use the PostgreSQL APB meta-container to create the bind
-by invoking the bind playbook.
+For our service provisioning example, we're going to walkthrough provisioning
+MediaWiki which is backed by a PostgreSQL database. This is accomplished by
+first provisioning a PostgreSQL instance and then the MediaWiki service.
 
-Let's recap, first, we will provision two APBs: PostgreSQL and MediaWiki. Then
-create and consume the binding to the PostgreSQL database. Finally, we will
-verify the MediaWiki service is up and running.
+Once the two services have been provisioned, we will tie them together by creating
+a binding between them. Bind is another one of the OSB API verbs used to provide
+credentials/coordinates for specific services. Like the provision operation, the
+Broker uses the PostgreSQL APB meta-container and invokes the bind playbook to
+create the binding.
 
-## Provision PostgreSQL APB
-Here we will provision the PostgreSQL APB
+Let's recap, first, we will provision two services using APBs: PostgreSQL and
+MediaWiki. Next we create and consume the binding to the PostgreSQL database instance.
+Finally, we will verify the MediaWiki service is up and running.
+
+## Provision PostgreSQL
+Using the PostgreSQL APB, we're going to provision a PostgreSQL database
+instance to use with MediaWiki service.
 
 1. We need to visit the console UI at https://127.0.0.1:8443, after accepting the
 certificate, you should see the login screen:
 
 ![screenshot of login screen](up-and-running-login-screen.png)
 
-2. Login with `admin:admin`. You should see a list of services, some marked 
-with APB:
+2. Login with `admin:admin`. You should see a list of services, some marked
+with APB after the service name:
 
 ![screenshot of apbs](up-and-running-apb-list-ui.png)
 
-3. From the list of services, select the PostgreSQL APB. You will be prompted for some
-information as you provision the service.
+3. From the list of services, select the PostgreSQL (APB). You will be prompted for some
+information as you proceed with provisioning the service.
 
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
-4. Next step is to choose a plan, select the Development plan.
+4. Next step is to choose a plan. For this deployment, you can just select the 'Development plan'.
 
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
 5. The configuration screen will ask you for some information.  Create a new project named
-*blog-project* and Description of *Blog Project*.  Then enter a password, it is fine to
-keep the other values as defaults.
+*blog-project* fill in the display name of *Blog Project*. Finally, enter a password for the
+database instance. It is fine to keep the other values as defaults.
 
 ![screenshot of config selection](up-and-running-psql-3-config.png)
 
-Above we selected an APB to provision. We created a project to put the service
-in to. We supplied some configuration parameters to the service. The parameters
-are actually supplied by the APB. That is part of the service's metadata which is
-exposed to OpenShift. This allows the UI to be catered to the particular
+To summarize, we selected the PostgreSQL APB to provision a PostgreSQL database service instance.
+We created a new project to deploy the service to. We supplied some configuration parameters for
+the service. These parameters are actually supplied by the PostgreSQL APB. It's part of the
+service's metadata which is exposed to OpenShift. This allows the UI to be catered for a given
 service. We will see a different set of parameters when we provision the
-MediaWiki APB later.
+MediaWiki service later on.
 
-One concept you may have noticed was that of plans.  Plans are another OSB
-API concept that is akin to tiers or pricing plans. For example, you could
-have a development plan that has minimal resources, lower cost and little to
-no persistence storage. This would let users use a service for development purposes.
-Or you could have, for example, a production plan, that has high-availability, a good
-bit of persistence storage, and more resources. The PostgreSQL APB exposes
-two plans: development and production.
+One concept you may have noticed during the provisioning operation was the notion of service
+plans. Service plans are another OSB API concept that is akin to tiers or pricing plans. For
+example, you could have a development plan that provides minimal resources, lower cost and
+little to no persistence storage. This would let users use a service for development purposes
+at a lower price. Or you could have, for example, a production plan, that has high-availability,
+a good amount of persistence storage, and more resources. The PostgreSQL APB exposes
+two service plans: development and production.
 
 ## Create the Binding
-A binding is a link between a service instance and an application. To save time,
-we will create a binding while provisioning the PostgreSQL APB. This will save
-the credentials for the PostgreSQL DB into a secret that can be shared with
-other applications.
+A binding is a link between two service instances. To save time, we'll create a binding
+while provisioning the PostgreSQL service instance. This will save
+the credentials for the PostgreSQL database into a secret that can be shared with
+other services.
 
 ![screenshot of create binding selection](up-and-running-psql-4-binding.png)
 
-While the PostgreSQL APB provisions, we can move on to provision the next
-application.
+While the PostgreSQL APB provisions the database service instance, we can move on to
+provisioning MediaWiki.
 
 ![screenshot of results selection](up-and-running-psql-5-results.png)
 
-## Provision MediaWiki APB
-While the PostgreSQL APB is provisioning, we can provision the next APB.
+## Provision MediaWiki
+Using the MediaWiki APB, we're going to proceed with provisioning the MediaWiki
+service.
 
-1. Let's provision the MediaWiki APB.
+1. Start by selecting 'MediaWiki (APB)' from the Service Catalog.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
-2. Configure MediaWiki, in the *Add to Project* drop-down select the *Blog Project*
-that we created earlier. Also, enter in passwords.
+2. In the *Add to Project* drop-down select the *Blog Project*
+that we created earlier. Also, enter in passwords. _(Note: You can not use
+*admin* for the password as the service instance will not startup.)_
 
 ![screenshot of mediawiki config](up-and-running-mediawiki-2-config.png)
 
-3. We can see it deploying, and that PostgreSQL has already been deployed.
+3. If we look in the *Blog Project* project, we can see the MediaWiki service
+deploying, and the PostgreSQL service should now be deployed.
 
 ![screenshot of mediawiki deploying](up-and-running-mediawiki-deploying.png)
 
-4. Once MediaWiki has been provisioned, we can browse to it. You can see the
-   default start page. Take note as at this point we don't have a wiki setup
-   yet. We need to bind MediaWiki to the PostgreSQL DB.
+4. Once MediaWiki has provisioned, we can open the URL in a web browser to connect
+to the service. You should see the default start page. Take note of the error message as
+the service is not setup yet as we still need to bind MediaWiki to the
+PostgreSQL database.
 
 ![screenshot of default mediawiki startpage](up-and-running-mediawiki-startpage.png)
 
-
 ## Consume Binding
-With both the PostgreSQL DB and the MediaWiki application provisioned. Let's
-bind them together. We created a binding during provisioning of the DB. We will
-now add this binding to the MediaWiki application.
+With the PostgreSQL database and the MediaWiki services provisioned, we can now
+bind them. Since we created a binding during the provision phase for PostgreSQL,
+all we need to do is add this binding to the MediaWiki service.
 
-1. Navigate to the Secrets menu of the "Blog Project" project.
+1. Navigate to the Secrets menu of the *Blog Project* project.
 
 ![screenshot of postgresql secret](up-and-running-secrets-menu.png)
 
@@ -234,15 +237,15 @@ now add this binding to the MediaWiki application.
 
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
 
-5.  We took the PostgreSQL credentials binding, added it to the MediaWiki
-application. When MediaWiki redeployed it took the environment variables and
-used them to connect itself to the database. If we visit the MediaWiki
-application again, we will see that we now have a fully configured wiki.
+5.  We took the PostgreSQL binding and added it to the MediaWiki service instance.
+When the MediaWiki service redeployed it consumed the environment variables
+to know what database instance to connect to. If we revisit the MediaWiki web
+page again, we'll see that it's pu and now fully configured.
 
 ![screenshot of mediawiki startpage with database](up-and-running-mediawiki-startpage-withdb.png)
 
 ### List the services from the CLI
-The UI isn't the only way to interact with the broker. We can list the
+The Service Catalog UI isn't the only way to interact with the Broker. We can also list the
 provisioned services using the CLI.
 
 ```bash
@@ -252,7 +255,7 @@ blog-project   dh-mediawiki-apb-rhzcs    1m
 blog-project   dh-postgresql-apb-t84wc   7m
 ```
 
-Let's check out the secrets in the blog-project
+Let's check out the secrets in the *'blog-project'*
 
 ```bash
 $ oc get secrets -n blog-project | awk -F, 'BEGIN{IGNORECASE=1}; NR==1 {print $1}; /^dh/ {print $1}'
@@ -262,10 +265,10 @@ dh-postgresql-apb-parameters43rfr           Opaque                              
 dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                                6         27m
 ```
 
-What have we done? We brought up a 3.7 cluster, deployed the OpenShift Ansible Broker,
-listed and provisioned a couple of APBs.
+To reiterate, we brought up an OpenShift Container Platform 3.7 cluster, deployed the OpenShift Ansible Broker,
+listed and provisioned a couple of services using APBs to perform the task.
 
-## Come check out Ansible Broker
+## Come check out OpenShift Ansible Broker
 If you would like to know more about the OpenShift Ansible Broker I encourage
 you to check out the project at: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
 
@@ -274,4 +277,4 @@ Also consider subscribing to:
 * IRC: Freenode #asbroker
 * Mailing list: [https://www.redhat.com/mailman/listinfo/ansible-service-broker](https://www.redhat.com/mailman/listinfo/ansible-service-broker)
 * Github: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
-* YouTube: [ansible-service-broker](https://www.youtube.com/channel/UC04eOMIMiV06_RSZPb4OOBw) 
+* YouTube: [ansible-service-broker](https://www.youtube.com/channel/UC04eOMIMiV06_RSZPb4OOBw)
