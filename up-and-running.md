@@ -2,33 +2,30 @@
 
 ## Overview
 
-In OpenShift 3.7 we introduced two new concepts, Service Catalog and Brokers.
-The Service Catalog gives a place for various service providers to list their
-services. It also helps users find and acquire these services for their needs.
+In OpenShift 3.7, we introduced two new concepts: Service Catalog and Service Brokers.
+The Service Catalog is a self-service marketplace where service consumers can find
+and acquire services. It’s also a place for various service providers to list their
+services to these consumers. (_For more detailed information about Service Catalog
+checkout Paul Morie's [Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/)_)
 
-For more detailed information about Service Catalog checkout Paul Morie's
-[Service Catalog deep dive](https://blog.openshift.com/openshift-commons-briefing-106-service-catalog-on-openshift-3-7-deep-dive/)
+To be useful to service consumers, the Service Catalog needs to be populated with
+content. This content is made available to the Service Catalog through Brokers,
+which implement the [Open Service Broker API](https://github.com/openservicebrokerapi/servicebroker) (OSB API). The broker is responsible for informing the Service Catalog of the
+services it can provision.
 
-To be useful, the Service Catalog needs content.  What drives the Service
-Catalog's content is the second concept introduced in OpenShift
-3.7: brokers. Service Brokers implement the [Open Service Broker
-API](https://github.com/openservicebrokerapi/servicebroker) (OSB API).
+Brokers may be responsible for only a single service, for example a MySQL
+broker, or they may offer a specific type of facility, like the OpenShift
+Template broker that supports a collection of services based on templates.
+Finally, brokers may be generic and a bit more powerful like the OpenShift
+Ansible Broker, which exposes services based on the Ansible Playbook Bundle
+(APB) application definition.
 
-Brokers are responsible for a set of services. You can have brokers that
-only do one service, for example a MySQL broker. You can have
-a broker that offers a specific type of facility, like the OpenShift Template
-broker which can support a collection of services based on templates. Or you can
-have a more powerful, generic broker like the OpenShift Ansible Broker which supplies a
-set of services based on Ansible Playbook Bundle (APB) application definitions.
-
-APBs provide a new method for defining and distributing container applications
-in OpenShift, consisting of a bundle of Ansible playbooks build into a container
-image with an Ansible runtime.  APBs leverage Ansible to create a standard
-mechanism for automating complex deployments.
-
-For more detailed information about Ansible Playbook Bundles checkout the
-[OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
-briefing by Todd Sanders and John Matthews.
+APBs provide a new method for defining and distributing simple to complex
+multi-container services on OpenShift, consisting of a bundle of Ansible
+Playbooks built into a container image with an Ansible runtime. APBs leverage
+Ansible to create a standard mechanism for automating complex deployments. (_For
+more detailed information about Ansible Playbook Bundles checkout the [OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
+briefing by Todd Sanders and John Matthews._)
 
 Now that you know what the OpenShift Ansible Broker is, let's get one up and
 running.
