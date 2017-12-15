@@ -97,7 +97,7 @@ clusterservicebroker "ansible-service-broker" created
 ```
 
 We now have an OpenShift cluster with the Service Catalog and Ansible Broker
-running.  You can communicate with the Broker through the Service Catalog
+running. You can communicate with the Broker through the Service Catalog
 using the oc command line. Here is an example of listing all the available
 APB service classes:
 
@@ -154,7 +154,7 @@ information as you proceed with provisioning the service.
 
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
-5. The configuration screen will ask you for some information.  Create a new project named
+5. The configuration screen will ask you for some information. Create a new project named
 *blog-project* fill in the display name of *Blog Project*. Finally, enter a password for the
 database instance. It is fine to keep the other values as defaults.
 
@@ -238,7 +238,7 @@ all we need to do is add this binding to the MediaWiki service.
 
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret-env.png)
 
-5.  We took the PostgreSQL binding and added it to the MediaWiki service instance.
+5. We took the PostgreSQL binding and added it to the MediaWiki service instance.
 When the MediaWiki service redeployed it consumed the environment variables
 to know what database instance to connect to. If we revisit the MediaWiki web
 page again, we'll see that it's pu and now fully configured.
