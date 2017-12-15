@@ -169,7 +169,7 @@ MediaWiki service later on.
 
 One concept you may have noticed during the provisioning operation was the notion of service
 plans. Service plans are another OSB API concept that is akin to tiers or pricing plans. For
-example, you could have a development plan that provides minimal resources, lower cost and
+example, you could have a development plan that provides minimal resources, lower cost, and
 little to no persistence storage. This would let users use a service for development purposes
 at a lower price. Or you could have, for example, a production plan, that has high-availability,
 a good amount of persistence storage, and more resources. The PostgreSQL APB exposes
