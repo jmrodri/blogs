@@ -1,4 +1,4 @@
-# Up and running with the OpenShift Ansible Broker
+# Up and Running with the OpenShift Ansible Broker
 
 ## Overview
 
@@ -245,7 +245,7 @@ page again, we'll see that it's pu and now fully configured.
 
 ![screenshot of mediawiki startpage with database](up-and-running-mediawiki-startpage-withdb.png)
 
-### List the services from the CLI
+### List the Services from the CLI
 The Service Catalog UI isn't the only way to interact with the Broker. We can also list the
 provisioned services using the CLI.
 
@@ -269,7 +269,7 @@ dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                              
 To reiterate, we brought up an OpenShift Container Platform 3.7 cluster, deployed the OpenShift Ansible Broker,
 listed and provisioned a couple of services using APBs to perform the task.
 
-## Come check out OpenShift Ansible Broker
+## Come Check out Openshift Ansible Broker
 If you would like to know more about the OpenShift Ansible Broker I encourage
 you to check out the project at: [https://github.com/openshift/ansible-service-broker/](https://github.com/openshift/ansible-service-broker/)
 
