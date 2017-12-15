@@ -101,9 +101,9 @@ running. You can communicate with the Broker through the Service Catalog
 using the oc command line. Here is an example of listing all the available
 APB service classes:
 
-```bash
+~~~bash
 oc get clusterserviceclasses --all-namespaces -o custom-columns=NAME:.metadata.name,DISPLAYNAME:spec.externalMetadata.displayName | grep APB
-```
+~~~
 
 It may take some time for the broker to sync the APBs into the catalog. If you
 get no APBs at first, run it again in a few seconds. Once they are available we
@@ -258,13 +258,13 @@ blog-project   dh-postgresql-apb-t84wc   7m
 
 Let's check out the secrets in the *'blog-project'*
 
-```bash
+~~~bash
 $ oc get secrets -n blog-project | awk -F, 'BEGIN{IGNORECASE=1}; NR==1 {print $1}; /^dh/ {print $1}'
 NAME                                        TYPE                                  DATA      AGE
 dh-mediawiki-apb-parametersch7a5            Opaque                                1         22m
 dh-postgresql-apb-parameters43rfr           Opaque                                1         28m
 dh-postgresql-apb-t84wc-credentials-x9xd8   Opaque                                6         27m
-```
+~~~
 
 To reiterate, we brought up an OpenShift Container Platform 3.7 cluster, deployed the OpenShift Ansible Broker,
 listed and provisioned a couple of services using APBs to perform the task.
