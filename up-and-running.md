@@ -14,16 +14,17 @@ which implement the [Open Service Broker API](https://github.com/openservicebrok
 services it can provision.
 
 Brokers may be responsible for only a single service, for example, a MySQL
-broker, or they may offer a specific type of facility, like the OpenShift
-Template broker that supports a collection of services based on templates.
-Finally, brokers may be generic and a bit more powerful like the OpenShift
-Ansible Broker, which exposes services based on the Ansible Playbook Bundle
+broker, or they may offer a specific type of facility, like the [OpenShift
+Template broker](https://docs.openshift.com/container-platform/3.7/architecture/service_catalog/template_service_broker.html) that supports a collection of services based on templates.
+Finally, brokers may be generic and a bit more powerful like the [OpenShift
+Ansible Broker](https://github.com/openshift/ansible-service-broker/), which
+exposes services based on the Ansible Playbook Bundle
 (APB) application definition.
 
 APBs provide a new method for defining and distributing simple to complex
 multi-container services on OpenShift, consisting of a bundle of Ansible
 Playbooks built into a container image with an Ansible runtime. APBs leverage
-Ansible to create a standard mechanism for automating complex deployments. _(For
+Ansible automation to create a standard mechanism for automating complex deployments. _(For
 more detailed information about Ansible Playbook Bundles check out the [OpenShift Commons](https://blog.openshift.com/openshift-commons-briefing-74-deploying-multi-container-applications-ansible-service-broker/)
 briefing by Todd Sanders and John Matthews.)_
 
@@ -69,7 +70,7 @@ OpenShift [template](https://raw.githubusercontent.com/jmrodri/simple-asb/up-and
 that can be used for this purpose. Let's download the template, process the variables, and create an OpenShift Ansible Broker instance.
 
 ```bash
-curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml | oc process -n "ansible-service-broker" -f - | oc create -f -
+curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/simple-broker-template.yaml | oc process -n "ansible-service-broker" -f - | oc create -f -
 ```
 
 A successful deployment will look like this:
