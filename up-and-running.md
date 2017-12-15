@@ -150,7 +150,7 @@ information as you proceed with provisioning the service.
 
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
-4. Next step is to choose a plan. For this deployment, you can just select the **'Development plan'**.
+4. Next step is to choose a plan. For this deployment, you can just select the **'Development'** plan.
 
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
