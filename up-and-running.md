@@ -145,12 +145,12 @@ with APB after the service name:
 
 ![screenshot of apbs](up-and-running-apb-list-ui.png)
 
-3. From the list of services, select the PostgreSQL (APB). You will be prompted for some
+3. From the list of services, select the **PostgreSQL (APB)**. You will be prompted for some
 information as you proceed with provisioning the service.
 
 ![screenshot of provisioning postgresql](up-and-running-psql-1-prov.png)
 
-4. Next step is to choose a plan. For this deployment, you can just select the 'Development plan'.
+4. Next step is to choose a plan. For this deployment, you can just select the **'Development plan'**.
 
 ![screenshot of plan selection](up-and-running-psql-2-plan.png)
 
@@ -192,7 +192,7 @@ provisioning MediaWiki.
 Using the MediaWiki APB, we're going to proceed with provisioning the MediaWiki
 service.
 
-1. Start by selecting 'MediaWiki (APB)' from the Service Catalog.
+1. Start by selecting **'MediaWiki (APB)'** from the Service Catalog.
 
 ![screenshot of mediawiki provision](up-and-running-mediawiki-1-prov.png)
 
@@ -223,13 +223,13 @@ all we need to do is add this binding to the MediaWiki service.
 
 ![screenshot of postgresql secret](up-and-running-secrets-menu.png)
 
-2. Select the `dh-postgresql-apb-*-credentials-*` secret. Click the Add to
-   Application button
+2. Select the `dh-postgresql-apb-*-credentials-*` secret. Click the **Add to
+   Application button**
 
 ![screenshot of postgresql secret](up-and-running-secret.png)
 
 3. From the Add to Application modal, select **mediawiki123** from the list. And
-   choose Environment variables.
+   choose **Environment variables**.
 
 ![screenshot of mediawiki env secrets](up-and-running-mediawiki-secret.png)
 
