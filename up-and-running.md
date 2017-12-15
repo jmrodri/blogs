@@ -69,9 +69,9 @@ With the project created, we can now deploy the broker. We've assembled an
 OpenShift [template](https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/deploy-ansible-service-broker.template.yaml)
 that can be used for this purpose. Let's download the template, process the variables, and create an OpenShift Ansible Broker instance.
 
-```bash
+~~~bash
 curl -s https://raw.githubusercontent.com/jmrodri/simple-asb/up-and-running/simple-broker-template.yaml | oc process -n "ansible-service-broker" -f - | oc create -f -
-```
+~~~
 
 A successful deployment will look like this:
 
